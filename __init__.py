@@ -139,15 +139,15 @@ class WeatherSkill(MycroftSkill):
                 location).get_forecast().get_weathers()[0]
             data_forecast = self.__build_data_condition(pretty_location,
                                                         weather_forecast)
-            data["temp_min"] = data_forecast["temp_min"]
-            data["temp_max"] = data_forecast["temp_max"]
-
+            data["temp_min"] = str((int(data_forecast["temp_min"])-32)*5/9)+" celsius"
+            data["temp_max"] = str((int(data_forecast["temp_max"])-32)*5/9)+ " celsius"
+            data["temp_current"] = str((int(data_forecast["temp_current"])-32)*5/9)+ " celsius"
             weather_code = str(weather.get_weather_icon_name())
             img_code = self.CODES[weather_code]
-            temp = data['temp_current']
+            temp = str((int(data_forecast["temp_current"])-32)*5/9)+" celsius"
             self.enclosure.deactivate_mouth_events()
             self.enclosure.weather_display(img_code, temp)
-
+            print(data)
             dialog_name = "current"
             if pretty_location == self.location_pretty:
                 dialog_name += ".local"
@@ -191,7 +191,10 @@ class WeatherSkill(MycroftSkill):
                 pretty_location, weather, 'day', 'min', 'max')
             weather_code = str(weather.get_weather_icon_name())
             img_code = self.CODES[weather_code]
-            temp = data['temp_current']
+            data["temp_min"] = str((int(data["temp_min"])-32)*5/9)+" celsius"
+            data["temp_max"] = str((int(data["temp_max"])-32)*5/9)+ " celsius"
+            data["temp_current"] = str((int(data["temp_current"])-32)*5/9)+ " celsius"
+            temp = data["temp_current"]
             self.enclosure.deactivate_mouth_events()
             self.enclosure.weather_display(img_code, temp)
             if pretty_location == self.location_pretty:
