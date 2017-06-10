@@ -1,0 +1,2 @@
+Morgen wird es {{condition}} in {{location}}, mit einem max von {{temp_max}} un einem min von{{temp_min}}
+In {{location}} wird es morgen bis {{temp_max}} warm und {{temp_min}} kalt mit {{condition}}

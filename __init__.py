@@ -36,9 +36,12 @@ LOG = getLogger(__name__)
 
 
 class OWMApi(Api):
-    def __init__(self):
+    def __init__(self,lang):
         super(OWMApi, self).__init__("owm")
-        self.lang = "en"
+        if(lang=="en-us"):
+            self.lang="en"
+        else:
+            self.lang = lang
         self.observation = ObservationParser()
         self.forecast = ForecastParser()
 
@@ -85,6 +88,7 @@ class OWMApi(Api):
 class WeatherSkill(MycroftSkill):
     def __init__(self):
         super(WeatherSkill, self).__init__("WeatherSkill")
+        self.language = self.config_core.get('lang')
         self.temperature = self.config.get('temperature')
         self.__init_owm()
         self.CODES = multi_key_dict()
@@ -102,7 +106,7 @@ class WeatherSkill(MycroftSkill):
         if key and not self.config.get('proxy'):
             self.owm = OWM(key)
         else:
-            self.owm = OWMApi()
+            self.owm = OWMApi(self.language)
 
     def initialize(self):
         self.__build_current_intent()
@@ -139,12 +143,12 @@ class WeatherSkill(MycroftSkill):
                 location).get_forecast().get_weathers()[0]
             data_forecast = self.__build_data_condition(pretty_location,
                                                         weather_forecast)
-            data["temp_min"] = str((int(data_forecast["temp_min"])-32)*5/9)+" celsius"
-            data["temp_max"] = str((int(data_forecast["temp_max"])-32)*5/9)+ " celsius"
-            data["temp_current"] = str((int(data_forecast["temp_current"])-32)*5/9)+ " celsius"
+            data["temp_min"] = str((int(data_forecast["temp_min"])-32)*5/9)
+            data["temp_max"] = str((int(data_forecast["temp_max"])-32)*5/9)
+            data["temp_current"] = str((int(data_forecast["temp_current"])-32)*5/9)
             weather_code = str(weather.get_weather_icon_name())
             img_code = self.CODES[weather_code]
-            temp = str((int(data_forecast["temp_current"])-32)*5/9)+" celsius"
+            temp = str((int(data_forecast["temp_current"])-32)*5/9)
             self.enclosure.deactivate_mouth_events()
             self.enclosure.weather_display(img_code, temp)
             print(data)
@@ -191,9 +195,9 @@ class WeatherSkill(MycroftSkill):
                 pretty_location, weather, 'day', 'min', 'max')
             weather_code = str(weather.get_weather_icon_name())
             img_code = self.CODES[weather_code]
-            data["temp_min"] = str((int(data["temp_min"])-32)*5/9)+" celsius"
-            data["temp_max"] = str((int(data["temp_max"])-32)*5/9)+ " celsius"
-            data["temp_current"] = str((int(data["temp_current"])-32)*5/9)+ " celsius"
+            data["temp_min"] = str((int(data["temp_min"])-32)*5/9)
+            data["temp_max"] = str((int(data["temp_max"])-32)*5/9)
+            data["temp_current"] = str((int(data["temp_current"])-32)*5/9)
             temp = data["temp_current"]
             self.enclosure.deactivate_mouth_events()
             self.enclosure.weather_display(img_code, temp)
